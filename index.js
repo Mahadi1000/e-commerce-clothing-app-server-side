@@ -22,8 +22,22 @@ const client = new MongoClient(uri, {
   });
   async function run() {
     try {
+        const productCollection = client.db("clothProductDB").collection("products");
+
+        //products related api
+        
+    app.get("/products", async (req, res) => {
+        const result = await productCollection.find().toArray();
+        res.send(result);
+      });
+      app.get("/products/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await productCollection.findOne(query);
+        res.send(result);
+      });
       // Connect the client to the server	(optional starting in v4.7)
-      await client.connect();
+    //   await client.connect();
       // Send a ping to confirm a successful connection
       await client.db("admin").command({ ping: 1 });
       console.log("Pinged your deployment. You successfully connected to MongoDB!");
